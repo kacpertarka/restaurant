@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/kacpertarka/restaurant/services/orders"
 )
 
 type HTTPServer struct {
@@ -20,8 +21,10 @@ func (server *HTTPServer) Start() error {
 	// Use gorilla/mux to create a new server instance
 
 	router := mux.NewRouter()
-	// subrouter := router.PathPrefix("/api/v1").Subrouter()
+	subrouter := router.PathPrefix("/api/v1").Subrouter()
 	// Register routes and handlers here
+	orderHandler := orders.NewOrderHandler()
+	orderHandler.RegisterRoutes(subrouter)
 
 	// start server
 	log.Printf("Starting server on %s", server.addr)
