@@ -1,6 +1,7 @@
 package orders
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 
@@ -9,10 +10,11 @@ import (
 )
 
 type OrderHandler struct {
+	db *sql.DB
 }
 
-func NewOrderHandler() *OrderHandler {
-	return &OrderHandler{}
+func NewOrderHandler(db *sql.DB) *OrderHandler {
+	return &OrderHandler{db: db}
 }
 
 func (handler *OrderHandler) RegisterRoutes(router *mux.Router) {

@@ -1,11 +1,14 @@
 build:
-	@go build -o bin/api cmd/main.go
+	docker-compose up --build --remove-orphans
 
-run: build
-	@./bin/restaurant	
+up:
+	docker-compose up -d
 
-build-docker:
-	@docker build -t api .
+down:
+	docker-compose down
 
-run-docker:
-	@docker run -it --rm -p 8080:8080 api
+show-logs:
+	docker-compose logs
+
+postgres:
+	docker-compose exec postgres psql --username=postgres --dbname=postgres

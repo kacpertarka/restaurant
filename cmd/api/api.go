@@ -1,6 +1,7 @@
 package api
 
 import (
+	"database/sql"
 	"log"
 	"net/http"
 
@@ -10,10 +11,14 @@ import (
 
 type HTTPServer struct {
 	addr string
+	db   *sql.DB
 }
 
-func NewHTTPServer(addr string) *HTTPServer {
-	return &HTTPServer{addr: addr}
+func NewHTTPServer(addr string, db *sql.DB) *HTTPServer {
+	return &HTTPServer{
+		addr: addr,
+		db:   db,
+	}
 }
 
 func (server *HTTPServer) Start() error {
@@ -23,7 +28,7 @@ func (server *HTTPServer) Start() error {
 	router := mux.NewRouter()
 	subrouter := router.PathPrefix("/api/v1").Subrouter()
 	// Register routes and handlers here
-	orderHandler := orders.NewOrderHandler()
+	orderHandler := orders.NewOrderHandler(server.db)
 	orderHandler.RegisterRoutes(subrouter)
 
 	// start server
