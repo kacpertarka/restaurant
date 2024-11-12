@@ -1,11 +1,8 @@
 package config
 
 import (
-	"log"
 	"os"
 	"strconv"
-
-	"github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -19,12 +16,14 @@ type Config struct {
 	POSTGRES_PORT     int
 }
 
-func InitConfig() Config {
+var Envs = initConfig()
+
+func initConfig() Config {
 	// load environment variables
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+	// err := godotenv.Load("./../.env")
+	// if err != nil {
+	// 	log.Fatal("Error loading .env file")
+	// }
 
 	return Config{
 		PORT: getEnvVariable("PORT", ":8080"),

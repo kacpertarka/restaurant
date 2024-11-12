@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	"github.com/joho/godotenv"
 	"github.com/kacpertarka/restaurant/cmd/api"
 	"github.com/kacpertarka/restaurant/config"
 	"github.com/kacpertarka/restaurant/database"
@@ -10,12 +11,16 @@ import (
 
 func main() {
 	// load config variables
-	config := config.InitConfig()
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	config := config.Envs
 
 	// postgres database connection
 	db := database.NewPostgresStorage(config)
 	database.Ping(db)
-	db.Close()
+	defer db.Close()
 	log.Println("DB connected")
 
 	// run API server
