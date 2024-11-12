@@ -24,4 +24,4 @@ migrate-up:
 	docker-compose run migrate up
 
 migrate-down:
-	@go run cmd/migrate/main.go down
+	docker-compose run migrate down
