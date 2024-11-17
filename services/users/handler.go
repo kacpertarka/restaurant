@@ -1,7 +1,6 @@
 package users
 
 import (
-	"database/sql"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -9,11 +8,11 @@ import (
 )
 
 type UserHandler struct {
-	db *sql.DB
+	crud UserCRUD
 }
 
-func NewUserHandler(db *sql.DB) *UserHandler {
-	return &UserHandler{db: db}
+func NewUserHandler(crud UserCRUD) *UserHandler {
+	return &UserHandler{crud: crud}
 }
 
 /*
@@ -36,13 +35,18 @@ func (handler *UserHandler) createNewUser(w http.ResponseWriter, r *http.Request
 	*/
 	// get JSON payload
 	var payload RegisterUserPayload
-	if err := utils.ParseJSON(r, payload); err != nil {
+	if err := utils.ParseJSON(r, &payload); err != nil {
 		utils.WriteERROR(w, err)
-        return
+		return
 	}
-	// check if user with given email exists - worker with given email
+	// use user crud to add new user (user crud use storage)
+	createUserResponse, err := handler.crud.CreateNewUser(payload)
+	if err != nil {
+		utils.WriteERROR(w, err)
+		return
+	}
 
-	// if doesn't exist - create new user and return map with user_id and password
+	utils.WriteJSON(w, http.StatusCreated, createUserResponse)
 }
 
 func (handler *UserHandler) getAllUsers(w http.ResponseWriter, r *http.Request) {

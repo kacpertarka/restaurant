@@ -4,7 +4,10 @@ import "time"
 
 /* INTERFACES */
 type UserStore interface {
+	// CreateNewUser(CreateUserPayload) (*ReturnCreatedUserResponse, error)
 	CreateNewUser(CreateUserPayload) (*ReturnCreatedUserResponse, error)
+	GetUserByEmail(string) (*UserBase, error)
+	IsUserExists(string) bool
 }
 
 /* STRUCTURES */
@@ -16,23 +19,22 @@ type RegisterUserPayload struct {
 }
 
 type CreateUserPayload struct {
-	Id          int64
-	UserID      string
-	FirstName   string
-	LastName    string
-	Email       string
-	PhoneNumber *string // may by null
-	Password    byte
-	Addres      *string // may be null
-	Role        string
-	CreatedAt   time.Time
-	IsActive    bool
+	// Id          int64
+	UserID    string
+	FirstName string
+	LastName  string
+	Email     string
+	Password  []byte
+	Role      uint8
+	CreatedAt time.Time
+	IsActive  bool
 }
 
 /* Responses */
 type ReturnCreatedUserResponse struct {
+	// return new user_id and raw password to could next login with user_id and password
 	UserID   string `json:"user_id"`
-	Password byte   `json:"password"`
+	Password string `json:"password"`
 }
 
 /* OTHERS */

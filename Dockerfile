@@ -8,9 +8,9 @@ COPY go.* .
 
 RUN go mod download
 
-COPY . .
-
 RUN mkdir -p /app/bin
+
+COPY . .
 
 EXPOSE 8080
 

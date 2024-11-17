@@ -2,8 +2,10 @@ package users
 
 import (
 	"database/sql"
-	"fmt"
+	"errors"
 )
+
+var notExistsUser = errors.New("user not found")
 
 type Store struct {
 	db *sql.DB
@@ -13,35 +15,41 @@ func NewStore(db *sql.DB) *Store {
 	return &Store{db: db}
 }
 
+func (store *Store) CreateNewUser(userPayload CreateUserPayload) (*ReturnCreatedUserResponse, error) {
+	/*Add new user data do database*/
+	_, err := store.db.Exec(
+		"INSERT INTO users (user_id, first_name, last_name, email, password, role, created_at, is_active) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING user_id",
+		userPayload.UserID, userPayload.FirstName, userPayload.LastName, userPayload.Email, userPayload.Password, userPayload.Role, userPayload.CreatedAt, userPayload.IsActive)
+	if err != nil {
+		return nil, err
+	}
+	return &ReturnCreatedUserResponse{UserID: userPayload.UserID}, nil
+}
+
 func (store *Store) GetUserByEmail(email string) (*UserBase, error) {
 	// query to get user by given email and return only UserBase(id, email)
-	rows, err := store.db.Query("SELECT id, email FROM users WHERE email = ?", email)
+	rows, err := store.db.Query("SELECT id, email FROM users WHERE email = $1", email)
 	if err != nil {
 		return nil, err
 	}
 
 	user := new(UserBase)
 	for rows.Next() {
-		user, err = scanRowIntoUser(rows)
+		user, err = scanRowIntoUserBase(rows)
 		if err != nil {
 			return nil, err
 		}
 	}
 
 	if user.ID == 0 {
-		return nil, fmt.Errorf("user not found")
+		return nil, notExistsUser
 	}
 	return user, nil
 }
 
-/* helper function */
-func scanRowIntoUser(rows *sql.Rows) (*UserBase, error) {
-	user := new(UserBase)
-	if err := rows.Scan(
-		user.ID,
-		user.Email,
-	); err != nil {
-		return nil, err
-	}
-	return user, nil
+func (store *Store) IsUserExists(email string) bool {
+	/*Check if user exist by email*/
+	// TODO: do not ignore other errors here
+	_, err := store.GetUserByEmail(email)
+	return err == notExistsUser
 }

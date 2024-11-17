@@ -24,5 +24,5 @@ func (handler *OrderHandler) RegisterRoutes(router *mux.Router) {
 func (handler *OrderHandler) healthChecker(w http.ResponseWriter, r *http.Request) {
 	// test route
 
-	utils.WriteJSON(w, http.StatusOK, fmt.Sprint("Your health is OK"))
+	utils.WriteJSON(w, http.StatusOK, fmt.Sprint("Your health is OK!!!"))
 }

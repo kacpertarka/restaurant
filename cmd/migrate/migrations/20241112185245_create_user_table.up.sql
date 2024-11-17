@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS users (
     address VARCHAR(255),
 
     -- roles like: worker, admin 
-    role VARCHAR(10) NOT NULL, 
+    role SMALLINT NOT NULL,
 
     -- info about when emplyee was hired
     created_at DATE NOT NULL,

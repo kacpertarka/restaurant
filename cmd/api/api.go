@@ -7,6 +7,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/kacpertarka/restaurant/services/orders"
+	"github.com/kacpertarka/restaurant/services/users"
 )
 
 type HTTPServer struct {
@@ -30,6 +31,12 @@ func (server *HTTPServer) Start() error {
 	// Register routes and handlers here
 	orderHandler := orders.NewOrderHandler(server.db)
 	orderHandler.RegisterRoutes(subrouter)
+
+	// Register user storage and handlees
+	userStore := users.NewStore(server.db)
+	userCRUD := users.NewUserCRUD(userStore)
+	userHandler := users.NewUserHandler(userCRUD)
+	userHandler.RegisterRoutes(subrouter)
 
 	// start server
 	log.Printf("Starting server on %s", server.addr)
