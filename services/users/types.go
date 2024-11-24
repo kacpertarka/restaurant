@@ -6,8 +6,9 @@ import "time"
 type UserStore interface {
 	// CreateNewUser(CreateUserPayload) (*ReturnCreatedUserResponse, error)
 	CreateNewUser(CreateUserPayload) (*ReturnCreatedUserResponse, error)
-	GetUserByEmail(string) (*UserBase, error)
-	IsUserExists(string) bool
+	GetUserByEmail(email string) (*UserBase, error)
+	IsUserExists(email string) bool
+	ChangePassword(email string, newPassword []byte) error
 }
 
 /* STRUCTURES */
@@ -16,6 +17,12 @@ type RegisterUserPayload struct {
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
 	Email     string `json:"email"`
+}
+
+type FirstLoginUserPayload struct {
+	Email       string `json:"email"`
+	OldPassword string `json:"old_password"`
+	NewPassword string `json:"new_password"`
 }
 
 type CreateUserPayload struct {
@@ -35,6 +42,12 @@ type ReturnCreatedUserResponse struct {
 	// return new user_id and raw password to could next login with user_id and password
 	UserID   string `json:"user_id"`
 	Password string `json:"password"`
+}
+
+type TokenResponse struct {
+	TokenType    string `json:"token_type"`
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
 }
 
 /* OTHERS */

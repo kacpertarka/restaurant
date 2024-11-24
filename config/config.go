@@ -1,9 +1,6 @@
 package config
 
-import (
-	"os"
-	"strconv"
-)
+import "github.com/kacpertarka/restaurant/utils"
 
 type Config struct {
 	PORT string
@@ -26,29 +23,12 @@ func initConfig() Config {
 	// }
 
 	return Config{
-		PORT: getEnvVariable("PORT", ":8080"),
+		PORT: utils.GetEnvVariable("PORT", ":8080"),
 
-		POSTGRES_HOST:     getEnvVariable("POSTGRES_HOST", "db_host"),
-		POSTGRES_USER:     getEnvVariable("POSTGRES_USER", "db_user"),
-		POSTGRES_PASSWORD: getEnvVariable("POSTGRES_PASSWORD", "db_password"),
-		POSTGRES_NAME:     getEnvVariable("POSTGRES_NAME", "db_name"),
-		POSTGRES_PORT:     getEnvVariableAsInt("POSTGRES_PORT", 5432),
+		POSTGRES_HOST:     utils.GetEnvVariable("POSTGRES_HOST", "db_host"),
+		POSTGRES_USER:     utils.GetEnvVariable("POSTGRES_USER", "db_user"),
+		POSTGRES_PASSWORD: utils.GetEnvVariable("POSTGRES_PASSWORD", "db_password"),
+		POSTGRES_NAME:     utils.GetEnvVariable("POSTGRES_NAME", "db_name"),
+		POSTGRES_PORT:     utils.GetEnvVariableAsInt("POSTGRES_PORT", 5432),
 	}
-}
-
-func getEnvVariable(key, fallback string) string {
-	val, ok := os.LookupEnv(key)
-	if ok {
-		return val
-	}
-	return fallback
-}
-
-func getEnvVariableAsInt(key string, fallback int) int {
-	val := getEnvVariable(key, strconv.Itoa(fallback))
-	valInt, err := strconv.Atoi(val)
-	if err != nil {
-		return fallback
-	}
-	return valInt
 }

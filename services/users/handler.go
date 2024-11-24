@@ -20,11 +20,24 @@ That handler is used by administration to creat new user account and manage all 
 */
 func (handler *UserHandler) RegisterRoutes(router *mux.Router) {
 	// handle methods like: add new user, get all users, get single user
-	router.HandleFunc("/users", handler.createNewUser).Methods("POST")          // create new user
-	router.HandleFunc("/users", handler.getAllUsers).Methods("GET")             // get all users
-	router.HandleFunc("/users/{user_id}", handler.getSingleUser).Methods("GET") // get single user
+	router.HandleFunc("/users", handler.createNewUser).Methods("POST")              // create new user
+	router.HandleFunc("/users", handler.getAllUsers).Methods("GET")                 // get all users
+	router.HandleFunc("/users/{user_id}", handler.getSingleUser).Methods("GET")     // get single user
+	router.HandleFunc("/users/first_login", handler.firstUserLogin).Methods("POST") // login
 }
 
+func (handler *UserHandler) firstUserLogin(w http.ResponseWriter, r *http.Request) {
+	/*
+		First user login. REquired old (auto generated) password and new - different than old
+	*/
+	// get JSON payload
+	var payload FirstLoginUserPayload
+	if err := utils.ParseJSON(r, payload); err != nil {
+		utils.WriteERROR(w, err)
+		return
+	}
+	// validate new password, change it, generate JWT
+}
 func (handler *UserHandler) createNewUser(w http.ResponseWriter, r *http.Request) {
 	/*
 		Create new user account with given: email, first_name, last_name.

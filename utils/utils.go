@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
+	"strconv"
 )
 
 func WriteJSON(w http.ResponseWriter, statusCode int, data any) error {
@@ -24,4 +26,21 @@ func ParseJSON(r *http.Request, payload any) error {
 		return fmt.Errorf("missing request data")
 	}
 	return json.NewDecoder(r.Body).Decode(payload)
+}
+
+func GetEnvVariable(key, fallback string) string {
+	val, ok := os.LookupEnv(key)
+	if ok {
+		return val
+	}
+	return fallback
+}
+
+func GetEnvVariableAsInt(key string, fallback int) int {
+	val := GetEnvVariable(key, strconv.Itoa(fallback))
+	valInt, err := strconv.Atoi(val)
+	if err != nil {
+		return fallback
+	}
+	return valInt
 }

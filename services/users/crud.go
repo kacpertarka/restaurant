@@ -66,3 +66,30 @@ func (crud *UserCRUD) CreateNewUser(userPayload RegisterUserPayload) (*ReturnCre
 
 	return createUserResponse, nil
 }
+
+func (crud *UserCRUD) FirstUserLogin(userPayload FirstLoginUserPayload) (error, error) {
+	/*
+		TODO: change first returned error to JWT struct
+	 */
+	// validate passwords
+	if !comparedPasswords(userPayload.OldPassword, userPayload.NewPassword) {
+		return nil, fmt.Errorf("new password should be different from old password")
+	}
+	// hash new password
+	newPassword, err := hashPassword(userPayload.NewPassword)
+	if err != nil {
+		return nil, err
+	}
+
+	// change password
+	err = crud.store.ChangePassword(userPayload.Email, newPassword)
+	if err != nil {
+		return nil, err
+	}
+
+	// generate JWT token with email and userID?
+
+
+
+	return nil, nil
+}
