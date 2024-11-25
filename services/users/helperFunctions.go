@@ -12,7 +12,7 @@ const passwordChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234
 
 func hashPassword(rawPassword string) ([]byte, error) {
 	/*Hash given password and return password in bytes*/
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(rawPassword), 14)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(rawPassword), 12)
 	if err != nil {
 		return []byte{}, err
 	}

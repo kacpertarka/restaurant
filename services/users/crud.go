@@ -87,17 +87,11 @@ func (crud *UserCRUD) FirstUserLogin(userPayload FirstLoginUserPayload) (*TokenR
 		return nil, err
 	}
 
-	// change password
-	err = crud.store.ChangePassword(userPayload.Email, newPassword)
+	// change password and activate account
+	err = crud.store.FirstChangePassword(userBase.ID, newPassword)
 	if err != nil {
 		return nil, err
 	}
-	// set is_active to true
-	err = crud.store.ActivateUserAccount(userPayload.Email)
-	if err != nil {
-		return nil, err
-	}
-
 	// generate JWT token with email and userID?
 	// generate jwt instance here ---- maybe use dependencies?
 	jwt := NewJWT()

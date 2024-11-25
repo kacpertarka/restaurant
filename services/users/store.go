@@ -54,28 +54,12 @@ func (store *Store) IsUserExists(email string) bool {
 	return err == notExistingUser
 }
 
-func (store *Store) ChangePassword(email string, newPassword []byte) error {
-	// get user by given email
-	userBase, err := store.GetUserByEmail(email)
-	if err != nil {
-		return nil
-	}
-
-	// change password where id = user.id  or email??
-	_, err = store.db.Exec("UPDATE users SET password = $1 WHERE id = $2", newPassword, userBase.ID)
+func (store *Store) FirstChangePassword(userID int64, newPassword []byte) error {
+	// change password where id = user.id + activate account
+	_, err := store.db.Exec("UPDATE users SET password = $1, is_active = true WHERE id = $2", newPassword, userID)
 	if err != nil {
 		return err
 	}
-
 	// change of passwrd went successfully
-	return nil
-}
-
-func (store *Store) ActivateUserAccount(email string) error {
-	// change password where  email = email
-	_, err := store.db.Exec("UPDATE users SET is_active = true WHERE email = $1", email)
-	if err != nil {
-		return err
-	}
 	return nil
 }

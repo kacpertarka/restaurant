@@ -8,8 +8,7 @@ type UserStore interface { // TODO: is this interface necessary???
 	CreateNewUser(CreateUserPayload) (*ReturnCreatedUserResponse, error)
 	GetUserByEmail(email string) (*UserBase, error)
 	IsUserExists(email string) bool
-	ChangePassword(email string, newPassword []byte) error
-	ActivateUserAccount(email string) error
+	FirstChangePassword(userID int64, newPassword []byte) error
 }
 
 /* STRUCTURES */
