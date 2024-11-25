@@ -14,9 +14,9 @@ type JWToken struct {
 	refreshTokenExp int64
 }
 
-func NewJWT(secretKey string, accesTokenExp, refreshTokenExp int64) *JWToken {
+func NewJWT() *JWToken {
 	return &JWToken{
-		secretKey:       utils.GetEnvVariable("JWT_SECRET_KEY", "very_secre_key"),
+		secretKey:       utils.GetEnvVariable("JWT_SECRET_KEY", "very_secret_key"),
 		accesTokenExp:   int64(utils.GetEnvVariableAsInt("JWT_ACCESS_EXP", 60*10)),
 		refreshTokenExp: int64(utils.GetEnvVariableAsInt("JWT_REFRESH_EXP", 60*10*6)),
 	}
@@ -51,9 +51,9 @@ func (j *JWToken) ValidateToken(tokenString string) error {
 func (j *JWToken) generateToken(userID string, expTime int64) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user_id": userID,
-		"exp":     time.Now().Add(time.Second * time.Duration(j.accesTokenExp)).Unix(),
+		"exp":     time.Now().Add(time.Second * time.Duration(expTime)).Unix(),
 	})
-	tokenString, err := token.SignedString(j.secretKey)
+	tokenString, err := token.SignedString([]byte(j.secretKey))
 	if err != nil {
 		return "", err
 	}

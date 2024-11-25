@@ -28,7 +28,7 @@ func (store *Store) CreateNewUser(userPayload CreateUserPayload) (*ReturnCreated
 
 func (store *Store) GetUserByEmail(email string) (*UserBase, error) {
 	// query to get user by given email and return only UserBase(id, email)
-	rows, err := store.db.Query("SELECT id, email FROM users WHERE email = $1", email)
+	rows, err := store.db.Query("SELECT id, user_id, email FROM users WHERE email = $1", email)
 	if err != nil {
 		return nil, err
 	}
@@ -68,5 +68,14 @@ func (store *Store) ChangePassword(email string, newPassword []byte) error {
 	}
 
 	// change of passwrd went successfully
+	return nil
+}
+
+func (store *Store) ActivateUserAccount(email string) error {
+	// change password where  email = email
+	_, err := store.db.Exec("UPDATE users SET is_active = true WHERE email = $1", email)
+	if err != nil {
+		return err
+	}
 	return nil
 }

@@ -3,7 +3,6 @@ package users
 import (
 	"database/sql"
 	"math/rand"
-	"strings"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
@@ -40,6 +39,7 @@ func scanRowIntoUserBase(rows *sql.Rows) (*UserBase, error) {
 	user := new(UserBase)
 	if err := rows.Scan(
 		&user.ID,
+		&user.UserID,
 		&user.Email,
 	); err != nil {
 		return nil, err
@@ -51,5 +51,3 @@ func comparedPasswords(oldPassword, newPassword string) bool {
 	// compare two of passwords - used only when user first login
 	return oldPassword == newPassword
 }
-
-

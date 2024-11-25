@@ -32,11 +32,17 @@ func (handler *UserHandler) firstUserLogin(w http.ResponseWriter, r *http.Reques
 	*/
 	// get JSON payload
 	var payload FirstLoginUserPayload
-	if err := utils.ParseJSON(r, payload); err != nil {
+	if err := utils.ParseJSON(r, &payload); err != nil {
 		utils.WriteERROR(w, err)
 		return
 	}
 	// validate new password, change it, generate JWT
+	token, err := handler.crud.FirstUserLogin(payload)
+	if err != nil {
+		utils.WriteERROR(w, err)
+		return
+	}
+	utils.WriteJSON(w, http.StatusOK, token)
 }
 func (handler *UserHandler) createNewUser(w http.ResponseWriter, r *http.Request) {
 	/*

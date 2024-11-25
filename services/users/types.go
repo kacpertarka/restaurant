@@ -3,12 +3,13 @@ package users
 import "time"
 
 /* INTERFACES */
-type UserStore interface {
+type UserStore interface { // TODO: is this interface necessary???
 	// CreateNewUser(CreateUserPayload) (*ReturnCreatedUserResponse, error)
 	CreateNewUser(CreateUserPayload) (*ReturnCreatedUserResponse, error)
 	GetUserByEmail(email string) (*UserBase, error)
 	IsUserExists(email string) bool
 	ChangePassword(email string, newPassword []byte) error
+	ActivateUserAccount(email string) error
 }
 
 /* STRUCTURES */
@@ -52,6 +53,7 @@ type TokenResponse struct {
 
 /* OTHERS */
 type UserBase struct { // TODO: this name to change??
-	ID    int64
-	Email string
+	ID     int64
+	UserID string
+	Email  string
 }

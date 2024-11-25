@@ -67,14 +67,20 @@ func (crud *UserCRUD) CreateNewUser(userPayload RegisterUserPayload) (*ReturnCre
 	return createUserResponse, nil
 }
 
-func (crud *UserCRUD) FirstUserLogin(userPayload FirstLoginUserPayload) (error, error) {
+func (crud *UserCRUD) FirstUserLogin(userPayload FirstLoginUserPayload) (*TokenResponse, error) {
 	/*
 		TODO: change first returned error to JWT struct
-	 */
+	*/
 	// validate passwords
-	if !comparedPasswords(userPayload.OldPassword, userPayload.NewPassword) {
+	if comparedPasswords(userPayload.OldPassword, userPayload.NewPassword) {
 		return nil, fmt.Errorf("new password should be different from old password")
 	}
+	// get user_id
+	userBase, err := crud.store.GetUserByEmail(userPayload.Email) // TODO: think if useing email or userID in crud methods
+	if err != nil {
+		return nil, err
+	}
+
 	// hash new password
 	newPassword, err := hashPassword(userPayload.NewPassword)
 	if err != nil {
@@ -86,10 +92,19 @@ func (crud *UserCRUD) FirstUserLogin(userPayload FirstLoginUserPayload) (error, 
 	if err != nil {
 		return nil, err
 	}
+	// set is_active to true
+	err = crud.store.ActivateUserAccount(userPayload.Email)
+	if err != nil {
+		return nil, err
+	}
 
 	// generate JWT token with email and userID?
+	// generate jwt instance here ---- maybe use dependencies?
+	jwt := NewJWT()
+	token, err := jwt.GenerateToken(userBase.UserID)
+	if err != nil {
+		return nil, err
+	}
 
-
-
-	return nil, nil
+	return token, nil
 }
