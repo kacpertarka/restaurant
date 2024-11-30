@@ -47,6 +47,19 @@ func scanRowIntoUserBase(rows *sql.Rows) (*UserBase, error) {
 	return user, nil
 }
 
+func scanRowIntoUser(rows *sql.Rows) (User, error) {
+	user := new(User)
+	if err := rows.Scan(
+		&user.UserID,
+		&user.Email,
+        &user.FirstName,
+        &user.LastName,
+	); err != nil {
+		return User{}, err
+	}
+	return *user, nil
+}
+
 func comparedPasswords(oldPassword, newPassword string) bool {
 	// compare two of passwords - used only when user first login
 	return oldPassword == newPassword

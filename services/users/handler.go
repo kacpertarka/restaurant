@@ -69,7 +69,15 @@ func (handler *UserHandler) createNewUser(w http.ResponseWriter, r *http.Request
 }
 
 func (handler *UserHandler) getAllUsers(w http.ResponseWriter, r *http.Request) {
-	// implement logic to get all users
+	/*
+		Return all users information
+	*/
+	users, err := handler.crud.GetAllUsers()
+	if err != nil {
+		utils.WriteERROR(w, err)
+		return
+	}
+	utils.WriteJSON(w, http.StatusOK, users)
 }
 
 func (handler *UserHandler) getSingleUser(w http.ResponseWriter, r *http.Request) {

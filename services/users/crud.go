@@ -117,3 +117,8 @@ func (crud *UserCRUD) FirstUserLogin(userPayload FirstLoginUserPayload) (*TokenR
 
 	return token, nil
 }
+
+func (crud *UserCRUD) GetAllUsers() ([]User, error) {
+	// return list of User struct
+	return crud.store.GetUsers()
+}

@@ -32,7 +32,7 @@ func (store *UserStore) GetUserByEmail(email string) (*UserBase, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	defer rows.Close()
 	user := new(UserBase)
 	for rows.Next() {
 		user, err = scanRowIntoUserBase(rows)
@@ -62,4 +62,31 @@ func (store *UserStore) FirstChangePassword(userID int64, newPassword []byte) er
 	}
 	// change of passwrd went successfully
 	return nil
+}
+
+func (store *UserStore) GetUsers() ([]User, error) {
+	// get rows count
+	var count int
+	err := store.db.QueryRow("SELECT COUNT(*) FROM users").Scan(&count)
+	if err != nil {
+		return nil, err
+	}
+	// get all users from database
+	userList := make([]User, 0, count)
+	rows, err := store.db.Query("SELECT user_id, email, first_name, last_name FROM users")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	// append users to list
+	for rows.Next() {
+		user, err := scanRowIntoUser(rows)
+		if err != nil {
+			// do not return error, just skip that row?
+			continue
+		}
+		userList = append(userList, user)
+	}
+	return userList, nil
 }

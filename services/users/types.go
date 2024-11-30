@@ -58,3 +58,10 @@ type UserBase struct { // TODO: this name to change??
 	UserID string
 	Email  string
 }
+
+type User struct {
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Email     string `json:"email"`
+	UserID    string `json:"user_id"`
+}
