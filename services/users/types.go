@@ -3,13 +3,13 @@ package users
 import "time"
 
 /* INTERFACES */
-type UserStore interface { // TODO: is this interface necessary???
-	// CreateNewUser(CreateUserPayload) (*ReturnCreatedUserResponse, error)
-	CreateNewUser(CreateUserPayload) (*ReturnCreatedUserResponse, error)
-	GetUserByEmail(email string) (*UserBase, error)
-	IsUserExists(email string) bool
-	FirstChangePassword(userID int64, newPassword []byte) error
-}
+// type UserStore interface { // TODO: is this interface necessary???
+// 	// CreateNewUser(CreateUserPayload) (*ReturnCreatedUserResponse, error)
+// 	CreateNewUser(CreateUserPayload) (*ReturnCreatedUserResponse, error)
+// 	GetUserByEmail(email string) (*UserBase, error)
+// 	IsUserExists(email string) bool
+// 	FirstChangePassword(userID int64, newPassword []byte) error
+// }
 
 /* STRUCTURES */
 /* Payloads */

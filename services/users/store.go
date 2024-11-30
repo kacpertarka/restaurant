@@ -7,15 +7,15 @@ import (
 
 var notExistingUser = errors.New("user not found")
 
-type Store struct {
+type UserStore struct {
 	db *sql.DB
 }
 
-func NewStore(db *sql.DB) *Store {
-	return &Store{db: db}
+func NewStore(db *sql.DB) *UserStore {
+	return &UserStore{db: db}
 }
 
-func (store *Store) CreateNewUser(userPayload CreateUserPayload) (*ReturnCreatedUserResponse, error) {
+func (store *UserStore) CreateNewUser(userPayload CreateUserPayload) (*ReturnCreatedUserResponse, error) {
 	/*Add new user data do database*/
 	_, err := store.db.Exec(
 		"INSERT INTO users (user_id, first_name, last_name, email, password, role, created_at, is_active) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING user_id",
@@ -26,7 +26,7 @@ func (store *Store) CreateNewUser(userPayload CreateUserPayload) (*ReturnCreated
 	return &ReturnCreatedUserResponse{UserID: userPayload.UserID}, nil
 }
 
-func (store *Store) GetUserByEmail(email string) (*UserBase, error) {
+func (store *UserStore) GetUserByEmail(email string) (*UserBase, error) {
 	// query to get user by given email and return only UserBase(id, email)
 	rows, err := store.db.Query("SELECT id, user_id, email FROM users WHERE email = $1", email)
 	if err != nil {
@@ -47,14 +47,14 @@ func (store *Store) GetUserByEmail(email string) (*UserBase, error) {
 	return user, nil
 }
 
-func (store *Store) IsUserExists(email string) bool {
+func (store *UserStore) IsUserExists(email string) bool {
 	/*Check if user exist by email*/
 	// TODO: do not ignore other errors here
 	_, err := store.GetUserByEmail(email)
 	return err == notExistingUser
 }
 
-func (store *Store) FirstChangePassword(userID int64, newPassword []byte) error {
+func (store *UserStore) FirstChangePassword(userID int64, newPassword []byte) error {
 	// change password where id = user.id + activate account
 	_, err := store.db.Exec("UPDATE users SET password = $1, is_active = true WHERE id = $2", newPassword, userID)
 	if err != nil {
