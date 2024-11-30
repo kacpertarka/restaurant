@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 )
 
@@ -28,6 +29,13 @@ func (crud *UserCRUD) CreateNewUser(userPayload RegisterUserPayload) (*ReturnCre
 	/*
 		Create new user - generate first login passwrod, generate user_id (uuid)
 	*/
+	// validate payload
+	validate := validator.New()
+	err := validate.Struct(userPayload)
+	if err != nil {
+		return nil, err
+	}
+
 	// check if user with given email exists - worker with given email
 	userEmail := userPayload.Email
 	if !crud.store.IsUserExists(userEmail) {
@@ -71,6 +79,13 @@ func (crud *UserCRUD) FirstUserLogin(userPayload FirstLoginUserPayload) (*TokenR
 	/*
 		TODO: change first returned error to JWT struct
 	*/
+	// validate payload
+	validate := validator.New()
+	err := validate.Struct(userPayload)
+	if err != nil {
+		return nil, err
+	}
+
 	// validate passwords
 	if comparedPasswords(userPayload.OldPassword, userPayload.NewPassword) {
 		return nil, fmt.Errorf("new password should be different from old password")

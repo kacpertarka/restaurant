@@ -1,6 +1,8 @@
 package users
 
-import "time"
+import (
+	"time"
+)
 
 /* INTERFACES */
 // type UserStore interface { // TODO: is this interface necessary???
@@ -14,15 +16,15 @@ import "time"
 /* STRUCTURES */
 /* Payloads */
 type RegisterUserPayload struct {
-	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
-	Email     string `json:"email"`
+	FirstName string `json:"first_name" validate:"required"`
+	LastName  string `json:"last_name" validate:"required"`
+	Email     string `json:"email" validate:"required,email"`
 }
 
 type FirstLoginUserPayload struct {
-	Email       string `json:"email"`
-	OldPassword string `json:"old_password"`
-	NewPassword string `json:"new_password"`
+	Email       string `json:"email" validate:"required,email"`
+	OldPassword string `json:"old_password" validate:"required"`
+	NewPassword string `json:"new_password" validate:"required"`
 }
 
 type CreateUserPayload struct {

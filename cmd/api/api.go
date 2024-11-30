@@ -34,7 +34,7 @@ func (server *HTTPServer) Start() error {
 
 	// Register user storage and handlees
 	userStore := users.NewStore(server.db)
-	userCRUD := users.NewUserCRUD(userStore)
+	userCRUD := users.NewUserCRUD(*userStore)
 	userHandler := users.NewUserHandler(userCRUD)
 	userHandler.RegisterRoutes(subrouter)
 
